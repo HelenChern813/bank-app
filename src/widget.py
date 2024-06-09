@@ -1,7 +1,9 @@
-from masks import get_mask_account, get_mask_card_number
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(bank_info: str) -> str:
+    """Возвращает имя карты или счет с их масками"""
+
     bank_info_list = bank_info.split(" ")
     if bank_info_list[0] == "Счет":
         masks_account = get_mask_account(bank_info_list[-1])
@@ -11,3 +13,9 @@ def mask_account_card(bank_info: str) -> str:
         del bank_info_list[-1]
         name_card = " ".join(bank_info_list)
         return f"{name_card} {masks_card}"
+
+
+def get_data(data_info: str) -> str:
+    """Взвращает дату операции"""
+
+    return f"{data_info[0:4]}.{data_info[5:7]}.{data_info[8:10]}"
