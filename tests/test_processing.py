@@ -40,6 +40,7 @@ def test_filter_by_state(my_list, my_state, expected):
 
 def test_sort_by_date():
     """Тест стандартной работы функции"""
+
     assert sort_by_date(
         [
             {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
