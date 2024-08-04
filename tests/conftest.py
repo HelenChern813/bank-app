@@ -61,3 +61,13 @@ def transactions():
         },
     ]
     return transactions
+
+
+@pytest.fixture()
+def transaction_rub():
+    return {"operationAmount": {"amount": 1.23, "currency": {"code": "RUB"}}}
+
+
+@pytest.fixture()
+def transaction_eur():
+    return {"operationAmount": {"amount": 1.23, "currency": {"code": "EUR"}}}

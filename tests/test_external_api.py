@@ -1,37 +1,28 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from src.external_api import summ_amount
-
-
-@patch("amount_float")
-def test_summ_amount_rub(mock_sum):
-    """Тест работы функции"""
-
-    transaction_rub = {
-        "id": 441945886,
-        "state": "EXECUTED",
-        "date": "2019-08-26T10:50:58.294041",
-        "operationAmount": {"amount": "31957.58", "currency": {"name": "руб.", "code": "RUB"}},
-        "description": "Перевод организации",
-        "from": "Maestro 1596837868705199",
-        "to": "Счет 64686473678894779589",
-    }
-    mock_sum.return_value = 319571.58
-    assert summ_amount(transaction_rub) == 319571.58
+from src.external_api import convert_exchange_rate, summ_amount
 
 
-@patch("exchange_rate")
-def test_summ_amount(mock_exchange_rate):
-    """Тест работы функции"""
+def test_summ_amount_rub(transaction_rub):
+    """Тест работы функции с рублями"""
 
-    transaction_currency = {
-        "id": 41428829,
-        "state": "EXECUTED",
-        "date": "2019-07-03T18:35:29.512364",
-        "operationAmount": {"amount": "8221.37", "currency": {"name": "USD", "code": "USD"}},
-        "description": "Перевод организации",
-        "from": "MasterCard 7158300734726758",
-        "to": "Счет 35383033474447895560",
-    }
-    mock_exchange_rate.return_value = 1
-    assert summ_amount(transaction_currency) == 8221.37
+    assert summ_amount(transaction_rub) == 1.23
+
+
+@patch("src.external_api.convert_exchange_rate")
+def test_summ_amount_eur(convert_mock, transaction_eur):
+    """Тест работы функции с другой валютой (евро)"""
+
+    convert_mock.return_value = 100
+
+    assert summ_amount(transaction_eur) == 123
+
+
+@patch("requests.get")
+def test_convert_exchange_rate(mock_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"rates": {"RUB": 1.0}}
+    mock_get.return_value = mock_response
+
+    assert convert_exchange_rate("USD") == 1.0
