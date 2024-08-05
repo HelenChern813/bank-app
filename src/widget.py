@@ -18,4 +18,6 @@ def mask_account_card(bank_info: str) -> str:
 def get_data(data_info: str) -> str:
     """Взвращает дату операции"""
 
-    return f"{data_info[0:4]}.{data_info[5:7]}.{data_info[8:10]}"
+    if len(data_info) == 26:
+        return f"{data_info[0:4]}.{data_info[5:7]}.{data_info[8:10]}"
+    return "Не правильные данные"
